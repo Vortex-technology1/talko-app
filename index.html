@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TALKO">
+    <title>TALKO System</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-120.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #22c55e;
+            --primary-dark: #16a34a;
+            --primary-glow: rgba(34, 197, 94, 0.15);
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-card-hover: #1a1a1a;
+            --border: #262626;
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --text-muted: #737373;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .header {
+            background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
+            padding: 60px 24px 32px;
+            padding-top: calc(60px + env(safe-area-inset-top));
+            position: relative;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 200px;
+            background: radial-gradient(ellipse, var(--primary-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            background: var(--primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .logo-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: #0a0a0a;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -1px;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .install-banner {
+            display: none;
+            background: var(--bg-card);
+            margin: 16px;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--primary);
+            color: white;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+
+        .install-banner.show {
+            display: flex;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 var(--primary-glow); }
+            50% { box-shadow: 0 0 20px 5px var(--primary-glow); }
+        }
+
+        .install-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .install-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: #0a0a0a;
+            stroke-width: 2.5;
+            fill: none;
+        }
+
+        .install-content { flex: 1; }
+
+        .install-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--primary);
+            margin-bottom: 2px;
+        }
+
+        .install-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .install-close {
+            width: 32px;
+            height: 32px;
+            background: var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .install-close svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--text-secondary);
+            stroke-width: 2;
+        }
+
+        .main {
+            padding: 24px 16px;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+        }
+
+        .section-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            padding: 6px 12px;
+            background: var(--primary-glow);
+            border-radius: 20px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--bg-card);
+            padding: 18px 16px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .menu-item:active {
+            transform: scale(0.98);
+        }
+
+        .menu-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:hover .menu-icon {
+            background: var(--primary-glow);
+            border-color: var(--primary);
+        }
+
+        .menu-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--primary);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .menu-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .menu-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .menu-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .menu-arrow {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-muted);
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:hover .menu-arrow {
+            stroke: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .menu-item {
+            opacity: 0;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        .menu-item:nth-child(1) { animation-delay: 0.05s; }
+        .menu-item:nth-child(2) { animation-delay: 0.1s; }
+        .menu-item:nth-child(3) { animation-delay: 0.15s; }
+        .menu-item:nth-child(4) { animation-delay: 0.2s; }
+        .menu-item:nth-child(5) { animation-delay: 0.25s; }
+        .menu-item:nth-child(6) { animation-delay: 0.3s; }
+        .menu-item:nth-child(7) { animation-delay: 0.35s; }
+        .menu-item:nth-child(8) { animation-delay: 0.4s; }
+        .menu-item:nth-child(9) { animation-delay: 0.45s; }
+        .menu-item:nth-child(10) { animation-delay: 0.5s; }
+        .menu-item:nth-child(11) { animation-delay: 0.55s; }
+        .menu-item:nth-child(12) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-item {
+            opacity: 0;
+            animation: fadeInUp 0.4s ease forwards;
+            animation-delay: 0.65s;
+        }
+        .stat-item:nth-child(2) { animation-delay: 0.7s; }
+        .stat-item:nth-child(3) { animation-delay: 0.75s; }
+        .stat-item:nth-child(4) { animation-delay: 0.8s; }
+
+        .splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .splash.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: splashPulse 1.5s ease infinite;
+            box-shadow: 0 0 60px var(--primary-glow);
+        }
+
+        .splash-logo svg {
+            width: 44px;
+            height: 44px;
+            fill: #0a0a0a;
+        }
+
+        .splash-text {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        @keyframes splashPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash" id="splash">
+        <div class="splash-logo">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="splash-text">TALKO</div>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span class="logo-text">TALKO</span>
+            </div>
+            <p class="header-subtitle">Система управління бізнесом</p>
+        </div>
+    </header>
+
+    <div class="install-banner" id="installBanner">
+        <div class="install-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+        <div class="install-content">
+            <div class="install-title">Встановити додаток</div>
+            <div class="install-subtitle">Додати на головний екран</div>
+        </div>
+        <button class="install-close" id="installClose">
+            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+
+    <main class="main">
+        <div class="section-title">12 систем</div>
+        
+        <nav class="menu">
+            <a href="https://alextalko.com/business-architecture-ua" class="menu-item" data-system="architecture">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Архітектура бізнесу</div>
+                    <div class="menu-subtitle">Фундамент системи</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/kpi" class="menu-item" data-system="statistics">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Система статистик</div>
+                    <div class="menu-subtitle">Контроль показників</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/alta" class="menu-item" data-system="tasks">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Таск менеджер</div>
+                    <div class="menu-subtitle">Управління завданнями</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/hiring-and-team-building-system" class="menu-item" data-system="hiring">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Система найму</div>
+                    <div class="menu-subtitle">Команда на автопілоті</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/financecourse" class="menu-item" data-system="finance">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8M8 14h8"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Фінансова система</div>
+                    <div class="menu-subtitle">Прозорість грошей</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/learning-platform-marketing-and-sales-system" class="menu-item" data-system="marketing">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Маркетинг і продажі</div>
+                    <div class="menu-subtitle">Передбачувані продажі</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/delegation-platform" class="menu-item" data-system="delegation">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Делегування</div>
+                    <div class="menu-subtitle">Передача задач команді</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/atm" class="menu-item" data-system="strategy">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Стратегічне планування</div>
+                    <div class="menu-subtitle">Довгострокові цілі</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://management-failure-log.vercel.app/" class="menu-item" data-system="journal">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Журнал управлінських збоїв</div>
+                    <div class="menu-subtitle">Аналіз помилок та рішень</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/tms" class="menu-item" data-system="ai">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 012 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 017 7h1a1 1 0 011 1v3a1 1 0 01-1 1h-1v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-1H2a1 1 0 01-1-1v-3a1 1 0 011-1h1a7 7 0 017-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 012-2z"/><circle cx="8.5" cy="14.5" r="1.5"/><circle cx="15.5" cy="14.5" r="1.5"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">AI-асистенти</div>
+                    <div class="menu-subtitle">Автоматизація без помилок</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/tms" class="menu-item" data-system="culture">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Культура відповідальності</div>
+                    <div class="menu-subtitle">Рішення, а не проблеми</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+
+            <a href="https://alextalko.com/tms" class="menu-item" data-system="coordination">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Координація</div>
+                    <div class="menu-subtitle">Команда як єдиний механізм</div>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+        </nav>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value">80-90%</div>
+                <div class="stat-label">рішень без вас</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">+30%</div>
+                <div class="stat-label">до прибутку</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">−50%</div>
+                <div class="stat-label">часу на рутину</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">AI працює</div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">© 2025 TALKO System</footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash').classList.add('hidden');
+            }, 800);
+        });
+
+        let deferredPrompt;
+        const installBanner = document.getElementById('installBanner');
+        const installClose = document.getElementById('installClose');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBanner.classList.add('show');
+        });
+
+        installBanner.addEventListener('click', async (e) => {
+            if (e.target === installClose || e.target.closest('.install-close')) {
+                installBanner.classList.remove('show');
+                return;
+            }
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBanner.classList.remove('show');
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        installClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            installBanner.classList.remove('show');
+        });
+
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        
+        if (isIOS && !isStandalone) {
+            installBanner.classList.add('show');
+            installBanner.querySelector('.install-subtitle').textContent = 
+                'Натисніть "Поділитися" → "На Початковий екран"';
+        }
+
+    </script>
+</body>
+</html>
